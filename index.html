@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Groundnut Price Prediction</title>
+  </head>
+  <body>
+    <h2>Groundnut Price Prediction</h2>
+    <form id="prediction-form">
+      <label for="Region">Region:</label>
+      <select id="Region" name="Region" required>
+        <option value="central">Central</option>
+        <option value="east">East</option>
+        <option value="south">South</option>
+        <option value="north">North</option>
+        <option value="west">West</option></select
+      ><br /><br />
+
+      <label for="Market_Type">Market Type:</label>
+      <select id="Market_Type" name="Market_Type" required>
+        <option value="wholesale">Wholesale</option>
+        <option value="local">Local</option></select
+      ><br /><br />
+
+      <label for="Month">Month:</label>
+      <select id="Month" name="Month" required>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option></select
+      ><br /><br />
+
+      <label for="Season">Season:</label>
+      <select id="Season" name="Season" required>
+        <option value="rabi">Rabi</option>
+        <option value="kharif">Kharif</option>
+        <option value="summer">Summer</option></select
+      ><br /><br />
+
+      <label for="Subsidy_Available">Subsidy Available:</label>
+      <select id="Subsidy_Available" name="Subsidy_Available" required>
+        <option value="0">No</option>
+        <option value="1">Yes</option></select
+      ><br /><br />
+
+      <label for="Production_Volume_Tons">Production Volume (Tons):</label>
+      <input
+        type="number"
+        step="any"
+        id="Production_Volume_Tons"
+        name="Production_Volume_Tons"
+        required
+      /><br /><br />
+
+      <label for="Imports_Tons">Imports (Tons):</label>
+      <input
+        type="number"
+        step="any"
+        id="Imports_Tons"
+        name="Imports_Tons"
+        required
+      /><br /><br />
+
+      <label for="Exports_Tons">Exports (Tons):</label>
+      <input
+        type="number"
+        step="any"
+        id="Exports_Tons"
+        name="Exports_Tons"
+        required
+      /><br /><br />
+
+      <label for="Consumption_Tons">Consumption (Tons):</label>
+      <input
+        type="number"
+        step="any"
+        id="Consumption_Tons"
+        name="Consumption_Tons"
+        required
+      /><br /><br />
+
+      <label for="Industrial_Use_Tons">Industrial Use (Tons):</label>
+      <input
+        type="number"
+        step="any"
+        id="Industrial_Use_Tons"
+        name="Industrial_Use_Tons"
+        required
+      /><br /><br />
+
+      <label for="Inflation_Rate">Inflation Rate (%):</label>
+      <input
+        type="number"
+        step="any"
+        id="Inflation_Rate"
+        name="Inflation_Rate"
+        required
+      /><br /><br />
+
+      <label for="Fuel_Price_Per_Liter">Fuel Price Per Liter:</label>
+      <input
+        type="number"
+        step="any"
+        id="Fuel_Price_Per_Liter"
+        name="Fuel_Price_Per_Liter"
+        required
+      /><br /><br />
+
+      <label for="Weather_Index">Weather Index:</label>
+      <input
+        type="number"
+        step="any"
+        id="Weather_Index"
+        name="Weather_Index"
+        required
+      /><br /><br />
+
+      <button type="button" onclick="makePrediction()">Predict Price</button>
+    </form>
+
+    <h3>Predicted Price: <span id="prediction-result"></span></h3>
+
+    <script>
+      function makePrediction() {
+        const formData = {};
+        document.querySelectorAll("input, select").forEach((input) => {
+          formData[input.name] = input.value;
+        });
+
+        fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => response.json()) // Parse JSON response
+          .then((data) => {
+            if (data.predicted_price) {
+              document.getElementById("prediction-result").textContent =
+                data.predicted_price;
+            } else {
+              document.getElementById("prediction-result").textContent =
+                "Error: " + data.error;
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("prediction-result").textContent =
+              "Error predicting price";
+          });
+      }
+    </script>
+  </body>
+</html>
